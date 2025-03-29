@@ -1,4 +1,5 @@
 ﻿using ImGuiNET;
+using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ public static class UIColorHelper
     {
         public bool Equals(UIColor left, UIColor right)
         {
-            return left.UIForeground == right.UIForeground;
+            return left.Dark == right.Dark;
         }
 
         public int GetHashCode(UIColor obj)
         {
-            return obj.UIForeground.GetHashCode();
+            return obj.Dark.GetHashCode();
         }
     }
 
@@ -36,7 +37,7 @@ public static class UIColorHelper
 
     public static Vector4 ToColor(UIColor uiColor)
     {
-        var uiColorBytes = BitConverter.GetBytes(uiColor.UIForeground);
+        var uiColorBytes = BitConverter.GetBytes(uiColor.Dark);
         return
             new Vector4((float)uiColorBytes[3] / 255,
             (float)uiColorBytes[2] / 255,
@@ -59,42 +60,38 @@ public static class UIColorHelper
 
     private static UIColor[] CreateUIColors()
     {
-        var uiColors = PluginServices.DataManager.GetExcelSheet<UIColor>();
-        if (uiColors != null)
+        if (PluginServices.DataManager.GetExcelSheet<UIColor>() is not ExcelSheet<UIColor> uiColors)
+            return [];
+
+        var filteredUIColors = new List<UIColor>(uiColors.Distinct(new UIColorComparer()).Where(uiColor => uiColor.Dark != 0 && uiColor.Dark != 255));
+        filteredUIColors.Sort((left, right) =>
         {
-            var filteredUIColors = new List<UIColor>(uiColors.Distinct(new UIColorComparer()).Where(uiColor => uiColor.UIForeground != 0 && uiColor.UIForeground != 255));
+            var leftColor = ToColor(left);
+            var rightColor = ToColor(right);
+            ImGui.ColorConvertRGBtoHSV(leftColor.X, leftColor.Y, leftColor.Z, out float leftHue, out float leftSaturation, out float leftValue);
+            ImGui.ColorConvertRGBtoHSV(rightColor.X, rightColor.Y, rightColor.Z, out float rightHue, out float rightSaturation, out float rightValue);
 
-            filteredUIColors.Sort((left, right) =>
+            var hueDifference = leftHue.CompareTo(rightHue);
+            if (hueDifference != 0)
             {
-                var leftColor = ToColor(left);
-                var rightColor = ToColor(right);
-                ImGui.ColorConvertRGBtoHSV(leftColor.X, leftColor.Y, leftColor.Z, out float leftHue, out float leftSaturation, out float leftValue);
-                ImGui.ColorConvertRGBtoHSV(rightColor.X, rightColor.Y, rightColor.Z, out float rightHue, out float rightSaturation, out float rightValue);
+                return hueDifference;
+            }
 
-                var hueDifference = leftHue.CompareTo(rightHue);
-                if (hueDifference != 0)
-                {
-                    return hueDifference;
-                }
+            var valueDifference = leftValue.CompareTo(rightValue);
+            if (valueDifference != 0)
+            {
+                return valueDifference;
+            }
 
-                var valueDifference = leftValue.CompareTo(rightValue);
-                if (valueDifference != 0)
-                {
-                    return valueDifference;
-                }
+            var saturationDifference = leftSaturation.CompareTo(rightSaturation);
+            if (saturationDifference != 0)
+            {
+                return saturationDifference;
+            }
 
-                var saturationDifference = leftSaturation.CompareTo(rightSaturation);
-                if (saturationDifference != 0)
-                {
-                    return saturationDifference;
-                }
+            return 0;
+        });
 
-                return 0;
-            });
-
-            return filteredUIColors.ToArray();
-        }
-
-        return new UIColor[] { };
+        return filteredUIColors.ToArray();
     }
 }
