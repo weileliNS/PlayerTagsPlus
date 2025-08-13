@@ -1,4 +1,4 @@
-﻿using ImGuiNET;
+﻿using Dalamud.Bindings.ImGui;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using System;
@@ -25,15 +25,7 @@ public static class UIColorHelper
 
     private static UIColor[] s_UIColors = null!;
 
-    public static IEnumerable<UIColor> UIColors
-    {
-        get
-        {
-            s_UIColors ??= CreateUIColors();
-
-            return s_UIColors;
-        }
-    }
+    public static IEnumerable<UIColor> UIColors => s_UIColors ??= CreateUIColors();
 
     public static Vector4 ToColor(UIColor uiColor)
     {
@@ -50,9 +42,7 @@ public static class UIColorHelper
         foreach (var uiColor in UIColors)
         {
             if ((ushort)uiColor.RowId == colorId)
-            {
                 return ToColor(uiColor);
-            }
         }
 
         return new Vector4();
@@ -68,30 +58,30 @@ public static class UIColorHelper
         {
             var leftColor = ToColor(left);
             var rightColor = ToColor(right);
-            ImGui.ColorConvertRGBtoHSV(leftColor.X, leftColor.Y, leftColor.Z, out float leftHue, out float leftSaturation, out float leftValue);
-            ImGui.ColorConvertRGBtoHSV(rightColor.X, rightColor.Y, rightColor.Z, out float rightHue, out float rightSaturation, out float rightValue);
+            var leftHue = 0f;
+            var leftSaturation = 0f;
+            var leftValue = 0f;
+            var rightHue = 0f;
+            var rightSaturation = 0f;
+            var rightValue = 0f;
+            ImGui.ColorConvertRGBtoHSV(leftColor.X, leftColor.Y, leftColor.Z, ref leftHue, ref leftSaturation, ref leftValue);
+            ImGui.ColorConvertRGBtoHSV(rightColor.X, rightColor.Y, rightColor.Z, ref rightHue, ref rightSaturation, ref rightValue);
 
             var hueDifference = leftHue.CompareTo(rightHue);
             if (hueDifference != 0)
-            {
                 return hueDifference;
-            }
 
             var valueDifference = leftValue.CompareTo(rightValue);
             if (valueDifference != 0)
-            {
                 return valueDifference;
-            }
 
             var saturationDifference = leftSaturation.CompareTo(rightSaturation);
             if (saturationDifference != 0)
-            {
                 return saturationDifference;
-            }
 
             return 0;
         });
 
-        return filteredUIColors.ToArray();
+        return [.. filteredUIColors];
     }
 }

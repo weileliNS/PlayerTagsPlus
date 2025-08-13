@@ -3,7 +3,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Lumina.Excel.Sheets;
 using Pilz.Dalamud.ActivityContexts;
 using Pilz.Dalamud.Icons;
@@ -558,7 +558,7 @@ public class PluginConfigurationUI
         // Render the child nodes
         if (isOpened)
         {
-            ImGui.TreePush();
+            ImGui.TreePush(tag.GetHashCode().ToString());
             foreach (var childTag in tag.Children.OrderBy(child => GetTreeItemName(child)).ToArray())
             {
                 DrawTree(childTag);
