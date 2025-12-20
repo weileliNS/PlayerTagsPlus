@@ -1,4 +1,3 @@
 [submodule "Pilz.Dalamud"]
 	path = Pilz.Dalamud
-	url = https://git.pilzinsel64.de/Pilzinsel64/PlayerTags.git
-branch = master
+	url = https://git.pilzinsel64.de/Pilz.NET/Pilz.Dalamud.git
