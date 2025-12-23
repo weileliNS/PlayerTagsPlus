@@ -1,8 +1,8 @@
-﻿<Project Sdk="Dalamud.NET.Sdk/13.0.0">
+﻿<Project Sdk="Dalamud.NET.Sdk/14.0.1">
 
   <PropertyGroup>
     <Authors>r00telement;Pilzinsel64</Authors>
-    <Version>1.12.3.0</Version>
+    <Version>1.12.4.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -44,6 +44,11 @@
     <None Update="Resources\Words\Nouns.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="DalamudPackager" Version="14.0.1" />
+    <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
   </ItemGroup>
 
 </Project>

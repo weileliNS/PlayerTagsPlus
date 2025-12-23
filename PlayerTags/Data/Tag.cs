@@ -75,7 +75,7 @@ public class Tag
             {
                 m_Inheritables = [];
 
-                var inheritableFields = GetType().GetFields().Where(field => typeof(IInheritable).IsAssignableFrom(field.FieldType));
+                var inheritableFields = GetType().GetFields().Where(f => typeof(IInheritable).IsAssignableFrom(f.FieldType));
                 foreach (var inheritableField in inheritableFields)
                 {
                     IInheritable? inheritable = inheritableField.GetValue(this) as IInheritable;

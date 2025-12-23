@@ -4,14 +4,14 @@ Lightweight job visibility in nameplates and chat. Create custom tags and add th
 
 ## Install
 
-### Via official plugin repo
+### Official plugin repo
 
 This plugin is available via the official plugin repository of Dalamud. Just search for "Player Tags" and install.
 
-### Via third party repo
+### Third party repo
 
 For the case you want instant updates, feel free to add my third party repo for this plugin:\
-`https://git.pilzinsel64.de/pilzinsel64/playertags/-/snippets/5/raw/main/pluginmaster.json`
+`https://git.pilzinsel64.de/Pilzinsel64/PlayerTags/raw/branch/updates/pluginmaster.json`
 
 ## Contribution
 
