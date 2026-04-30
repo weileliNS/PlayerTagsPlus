@@ -159,7 +159,7 @@ public class PluginConfigurationUI
                         }
                         ImGui.TableHeadersRow();
 
-                        if (PluginServices.ClientState.LocalPlayer != null)
+                        if (PluginServices.ObjectTable.LocalPlayer is { } localPlayer)
                         {
                             Dictionary<Identity, PlayerInfo> playerNameContexts = PluginServices.ObjectTable
                                 .Where(gameObject => gameObject is IPlayerCharacter)
@@ -169,7 +169,7 @@ public class PluginConfigurationUI
                                     playerCharacter => new PlayerInfo()
                                     {
                                         PlayerContext = PlayerContextHelper.GetPlayerContext(playerCharacter!),
-                                        Proximity = (playerCharacter!.Position - PluginServices.ClientState.LocalPlayer.Position).Length()
+                                        Proximity = (playerCharacter!.Position - localPlayer.Position).Length()
                                     });
 
                             // Include party members that aren't in the game object list
@@ -239,9 +239,9 @@ public class PluginConfigurationUI
                             ++rowIndex;
                         }
 
-                        if (PluginServices.ObjectTable.Length == 0 && PluginServices.ClientState.LocalPlayer != null)
+                        if (PluginServices.ObjectTable.Length == 0 && PluginServices.ObjectTable.LocalPlayer is { } localPlayer)
                         {
-                            DrawQuickAddRow(m_PluginData.GetIdentity(PluginServices.ClientState.LocalPlayer), 0);
+                            DrawQuickAddRow(m_PluginData.GetIdentity(localPlayer), 0);
                         }
 
                         ImGui.EndTable();

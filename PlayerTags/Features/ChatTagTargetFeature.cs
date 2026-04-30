@@ -62,7 +62,7 @@ public class ChatTagTargetFeature : TagTargetFeature
 
         public bool IsLocalPlayer
         {
-            get => GetMatchTextInternal() == PluginServices.ClientState.LocalPlayer.Name.TextValue;
+            get => GetMatchTextInternal() == PluginServices.ObjectTable.LocalPlayer.Name.TextValue;
         }
 
         private string GetMatchTextInternal()
@@ -217,7 +217,7 @@ public class ChatTagTargetFeature : TagTargetFeature
 
     private void ParsePayloadsForOwnPlayer(SeString seString, XivChatType chatType, bool isSender)
     {
-        if (PluginServices.ClientState.LocalPlayer != null)
+        if (PluginServices.ObjectTable.LocalPlayer is { } localPlayer)
         {
             foreach (var payload in seString.Payloads.ToArray())
             {
@@ -225,7 +225,7 @@ public class ChatTagTargetFeature : TagTargetFeature
                 {
                     List<TextPayload> playerTextPayloads = [];
 
-                    var playerName = PluginServices.ClientState.LocalPlayer.Name.TextValue;
+                    var playerName = localPlayer.Name.TextValue;
                     var playerNameShorted = BuildPlayername(playerName);
 
                     if (textPayload.Text == playerName || textPayload.Text == playerNameShorted)
@@ -275,7 +275,7 @@ public class ChatTagTargetFeature : TagTargetFeature
                         // Fix displaying of abbreviated  own player name as the game does this after the chat message handler
                         playerTextPayload.Text = BuildPlayername(playerTextPayload.Text);
 
-                        var playerPayload = new PlayerPayload(playerName, PluginServices.ClientState.LocalPlayer.HomeWorld.RowId);
+                        var playerPayload = new PlayerPayload(playerName, localPlayer.HomeWorld.RowId);
                         int playerPayloadIndex = seString.Payloads.IndexOf(playerTextPayload);
                         var hasNumberPrefix = isSender && (chatType == XivChatType.Party || chatType == XivChatType.Alliance);
 

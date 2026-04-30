@@ -9,7 +9,7 @@ public static class PlayerContextHelper
     {
         var playerContext = PlayerContext.None;
 
-        if (PluginServices.ClientState.LocalPlayer == playerCharacter)
+        if (PluginServices.ObjectTable.LocalPlayer == playerCharacter)
             playerContext |= PlayerContext.Self;
 
         if (playerCharacter.StatusFlags.HasFlag(StatusFlags.Friend))
