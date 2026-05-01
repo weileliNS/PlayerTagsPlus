@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+﻿using Dalamud.Game.Chat;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
@@ -103,12 +104,12 @@ public class ChatTagTargetFeature : TagTargetFeature
         GC.SuppressFinalize(this);
     }
 
-    private void ChatGui_ChatMessage(XivChatType type, int timestamp, ref SeString sender, ref SeString message, ref bool isHandled)
+    private void ChatGui_ChatMessage(IHandleableChatMessage message)
     {
         if (EnableGlobal && pluginConfiguration.GeneralOptions[ActivityContextManager.CurrentActivityContext.ActivityType].IsApplyTagsToAllChatMessagesEnabled)
         {
-            AddTagsToChat(sender, type, true);
-            AddTagsToChat(message, type, false);
+            AddTagsToChat(message.Sender, message.LogKind, true);
+            AddTagsToChat(message.Message, message.LogKind, false);
         }
     }
 
