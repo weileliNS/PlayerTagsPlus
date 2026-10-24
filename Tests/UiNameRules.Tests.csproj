@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../PlayerTags/Features/UiNameRules.cs" Link="UiNameRules.cs" />
+    <Compile Include="../PlayerTags/Features/UiTextSnapshot.cs" Link="UiTextSnapshot.cs" />
+  </ItemGroup>
+</Project>

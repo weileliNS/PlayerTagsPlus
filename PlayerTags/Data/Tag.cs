@@ -293,7 +293,8 @@ public class Tag
         foreach ((var name, var inheritableData) in changes)
         {
             var namefixed = FixObsuleteInheritableStringName(name);
-            Inheritables[namefixed].SetData(inheritableData);
+            if (Inheritables.TryGetValue(namefixed, out var inheritable))
+                inheritable.SetData(inheritableData);
         }
     }
 

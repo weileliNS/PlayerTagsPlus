@@ -45,6 +45,11 @@ public class PluginConfiguration : IPluginConfiguration
     public bool IsPlayersTabEnemiesVisible = true;
     public bool IsPlayersTabOthersVisible = false;
     public bool IsGeneralOptionsAllTheSameEnabled = true;
+    public bool JobNamesPartyList = true;
+    public bool JobNamesCharacter = true;
+    public bool JobNamesFocusTarget = true;
+    public bool JobNamesTargetOfTarget = true;
+    public bool JobNamesAlliance = true;
 
     [JsonProperty(TypeNameHandling = TypeNameHandling.None, ItemTypeNameHandling = TypeNameHandling.None)]
     public Dictionary<string, InheritableData> AllTagsChanges = [];
@@ -250,6 +255,13 @@ public class PluginConfiguration : IPluginConfiguration
     public static PluginConfiguration LoadPluginConfig()
     {
         var configFilePath = GetConfigFilePath();
+        Directory.CreateDirectory(Path.GetDirectoryName(configFilePath)!);
+        if (!File.Exists(configFilePath))
+        {
+            var parent = Directory.GetParent(PluginServices.DalamudPluginInterface.ConfigDirectory.FullName);
+            var original = Path.Combine(parent!.FullName, "PlayerTags", "Config.json");
+            if (File.Exists(original)) File.Copy(original, configFilePath, false);
+        }
         object config = null;
 
         if (File.Exists(configFilePath))

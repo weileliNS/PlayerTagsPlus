@@ -8,7 +8,7 @@ namespace PlayerTags;
 
 public sealed class Plugin : IDalamudPlugin
 {
-    private const string c_CommandName = "/playertags";
+    private const string c_CommandName = "/playertagsplus";
     private const string c_SubCommandName_EnableGlobal = "enableglobal";
     private const string c_CommandArg_On = "on";
     private const string c_CommandArg_Off = "off";
@@ -21,6 +21,7 @@ public sealed class Plugin : IDalamudPlugin
     private readonly CustomTagsContextMenuFeature customTagsContextMenuFeature;
     private readonly NameplateTagTargetFeature nameplatesTagTargetFeature;
     private readonly ChatTagTargetFeature chatTagTargetFeature;
+    private readonly UiJobNamesFeature uiJobNamesFeature;
 
     public Plugin(IDalamudPluginInterface pluginInterface)
     {
@@ -43,10 +44,14 @@ public sealed class Plugin : IDalamudPlugin
         customTagsContextMenuFeature = new CustomTagsContextMenuFeature(pluginConfiguration, pluginData);
         nameplatesTagTargetFeature = new NameplateTagTargetFeature(pluginConfiguration, pluginData);
         chatTagTargetFeature = new ChatTagTargetFeature(pluginConfiguration, pluginData);
+        uiJobNamesFeature = new UiJobNamesFeature(pluginConfiguration, pluginData);
+        PluginServices.DalamudPluginInterface.UiBuilder.OpenMainUi += UiBuilder_OpenConfigUi;
     }
 
     public void Dispose()
     {
+        uiJobNamesFeature.Dispose();
+        PluginServices.DalamudPluginInterface.UiBuilder.OpenMainUi -= UiBuilder_OpenConfigUi;
         chatTagTargetFeature.Dispose();
         nameplatesTagTargetFeature.Dispose();
         customTagsContextMenuFeature.Dispose();
@@ -71,6 +76,11 @@ public sealed class Plugin : IDalamudPlugin
                 else
                 {
                     var lowerArgs = arguments.ToLower().Split(' ');
+                    if (lowerArgs[0] == "diagnostics")
+                    {
+                        PluginServices.ChatGui.Print("[Player Tags Plus] " + uiJobNamesFeature.Diagnostics);
+                        return;
+                    }
                     if (lowerArgs.Length >= 1)
                     {
                         switch (lowerArgs[0])
@@ -78,7 +88,7 @@ public sealed class Plugin : IDalamudPlugin
                             case c_SubCommandName_EnableGlobal:
                                 if (lowerArgs.Length >= 2)
                                 {
-                                    switch (lowerArgs[0])
+                                    switch (lowerArgs[1])
                                     {
                                         case c_CommandArg_On:
                                             pluginConfiguration.EnabledGlobal = true;

@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <Authors>r00telement;Pilzinsel64</Authors>
-    <Version>1.12.5.0</Version>
+    <Version>1.13.0.0</Version>
+    <AssemblyName>PlayerTagsPlus</AssemblyName>
+    <RootNamespace>PlayerTags</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,7 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pilz.Dalamud\Pilz.Dalamud\Pilz.Dalamud.csproj" />
+    <ProjectReference Include="..\Pilz.Dalamud\Pilz.Dalamud\Pilz.Dalamud.csproj" Condition="'$(PilzDalamudPath)' == ''" />
+    <Reference Include="Pilz.Dalamud" Condition="'$(PilzDalamudPath)' != ''"><HintPath>$(PilzDalamudPath)/Pilz.Dalamud.dll</HintPath></Reference>
   </ItemGroup>
 
   <ItemGroup>
@@ -48,7 +51,12 @@
 
   <ItemGroup>
     <PackageReference Update="DalamudPackager" Version="15.0.0" />
-    <PackageReference Update="DotNet.ReproducibleBuilds" Version="2.0.2" />
+    <PackageReference Update="DotNet.ReproducibleBuilds" Version="1.2.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Pilz.Dalamud/LICENSE" Link="Pilz.Dalamud-LICENSE" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

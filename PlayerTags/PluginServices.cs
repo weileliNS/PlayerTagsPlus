@@ -16,6 +16,11 @@ public class PluginServices
     [PluginService] public static IPartyList PartyList { get; set; }
     [PluginService] public static IContextMenu ContextMenu { get; set; }
     [PluginService] public static INamePlateGui NamePlateGui { get; set; }
+    [PluginService] public static IAddonLifecycle AddonLifecycle { get; set; }
+    [PluginService] public static IGameGui GameGui { get; set; }
+    [PluginService] public static IClientState ClientState { get; set; }
+    [PluginService] public static IFramework Framework { get; set; }
+    [PluginService] public static ITargetManager TargetManager { get; set; }
 
     public static void Initialize(IDalamudPluginInterface pluginInterface)
     {

@@ -52,7 +52,7 @@ public class PluginConfigurationUI
 
         ImGui.SetNextWindowSize(ImGuiHelpers.ScaledVector2(600, 500), ImGuiCond.FirstUseEver);
 
-        if (ImGui.Begin(Strings.Loc_Static_PluginName, ref m_PluginConfiguration.IsVisible))
+        if (ImGui.Begin("Player Tags Plus###PlayerTagsPlus", ref m_PluginConfiguration.IsVisible))
         {
             propertyProxy.LoadData();
 
@@ -66,6 +66,15 @@ public class PluginConfigurationUI
             {
                 if (ImGui.BeginTabItem(Strings.Loc_Static_General))
                 {
+                    if (ImGui.Checkbox("启用 / Enabled", ref m_PluginConfiguration.EnabledGlobal)) SaveSettings();
+                    ImGui.TextUnformatted("职业名替换 / Job names");
+                    if (ImGui.Checkbox("小队列表 / Party list", ref m_PluginConfiguration.JobNamesPartyList)) SaveSettings();
+                    if (ImGui.Checkbox("角色面板 / Character window", ref m_PluginConfiguration.JobNamesCharacter)) SaveSettings();
+                    if (ImGui.Checkbox("焦点目标 / Focus target", ref m_PluginConfiguration.JobNamesFocusTarget)) SaveSettings();
+                    if (ImGui.Checkbox("目标的目标 / Target of target", ref m_PluginConfiguration.JobNamesTargetOfTarget)) SaveSettings();
+                    if (ImGui.Checkbox("团队列表 / Alliance list", ref m_PluginConfiguration.JobNamesAlliance)) SaveSettings();
+                    ImGui.TextWrapped("使用职业标签文字；PvP 不替换。 / Uses job tag text; disabled in PvP.");
+                    ImGui.Separator();
                     ImGui.Spacing();
                     ImGui.Spacing();
                     DrawCheckbox(nameof(m_PluginConfiguration.IsCustomTagsContextMenuEnabled), true, ref m_PluginConfiguration.IsCustomTagsContextMenuEnabled, () => SaveSettings());
