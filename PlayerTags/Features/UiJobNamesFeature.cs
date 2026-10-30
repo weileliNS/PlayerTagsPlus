@@ -19,7 +19,7 @@ namespace PlayerTags.Features;
 
 public sealed unsafe class UiJobNamesFeature : IDisposable
 {
-    private static readonly string[] Addons = ["_PartyList", "Character", "_FocusTargetInfo", "_TargetInfo", "_TargetInfoToT", "_AllianceList1", "_AllianceList2"];
+    private static readonly string[] Addons = ["_PartyList", "Character", "_FocusTargetInfo", "_TargetInfo", "_TargetInfoMainTarget", "_TargetInfoToT", "_AllianceList1", "_AllianceList2"];
     private readonly PluginConfiguration configuration;
     private readonly PluginData data;
     private readonly Dictionary<nint, Dictionary<nint, UiTextSnapshot>> snapshots = [];
@@ -29,6 +29,7 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
     private UiNameRules self = new();
     private UiNameRules combinedTarget = new();
     private UiNameRules targetOfTarget = new();
+    private UiNameRules primaryTarget = new();
     private long lastRefresh;
     private long lastStatusSave;
     private bool disposing;
@@ -40,13 +41,13 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         PluginServices.AddonLifecycle.RegisterListener(AddonEvent.PreDraw, Addons, OnDraw);
         PluginServices.AddonLifecycle.RegisterListener(AddonEvent.PreFinalize, Addons, OnFinalize);
         PluginServices.Framework.Update += Refresh;
-        Refresh(PluginServices.Framework);
     }
 
     public string Diagnostics => string.Join(", ", Addons.Select(n => n + "=" + changed.GetValueOrDefault(n)));
 
     private void Refresh(Dalamud.Plugin.Services.IFramework _)
     {
+        if (!PluginServices.Framework.IsInFrameworkUpdateThread || disposing) return;
         if (Environment.TickCount64 - lastRefresh < 250) return;
         lastRefresh = Environment.TickCount64;
         var all = new UiNameRules();
@@ -72,14 +73,23 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         var secondary = target?.TargetObject as IPlayerCharacter;
         var combined = new UiNameRules();
         var separate = new UiNameRules();
+        var primary = new UiNameRules();
+        if (target is IPlayerCharacter mainPlayer)
+        {
+            var label = JobName(mainPlayer.ClassJob.RowId);
+            primary.Add(mainPlayer.Name.TextValue, label);
+            if (configuration.JobNamesTarget) combined.Add(mainPlayer.Name.TextValue, label);
+        }
         if (secondary != null)
         {
             var label = JobName(secondary.ClassJob.RowId);
-            combined.Add(secondary.Name.TextValue, label);
+            if (configuration.JobNamesTargetOfTarget) combined.Add(secondary.Name.TextValue, label);
             separate.Add(secondary.Name.TextValue, label);
         }
-        // The combined target addon also contains the primary target's name.
-        if (target is IPlayerCharacter) combined.Exclude(target.Name.TextValue);
+        // Keep the two switches independent in the combined HUD layout.
+        if (!configuration.JobNamesTarget && target is IPlayerCharacter) combined.Exclude(target.Name.TextValue);
+        if (!configuration.JobNamesTargetOfTarget && secondary != null) combined.Exclude(secondary.Name.TextValue);
+        primary.Seal(); primaryTarget = primary;
         combined.Seal(); separate.Seal(); combinedTarget = combined; targetOfTarget = separate;
         all.Seal(); local.Seal(); players = all; self = local;
         if (Environment.TickCount64 - lastStatusSave > 2000)
@@ -118,7 +128,9 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         "_PartyList" => configuration.JobNamesPartyList,
         "Character" => configuration.JobNamesCharacter,
         "_FocusTargetInfo" => configuration.JobNamesFocusTarget,
-        "_TargetInfo" or "_TargetInfoToT" => configuration.JobNamesTargetOfTarget,
+        "_TargetInfo" => configuration.JobNamesTarget || configuration.JobNamesTargetOfTarget,
+        "_TargetInfoMainTarget" => configuration.JobNamesTarget,
+        "_TargetInfoToT" => configuration.JobNamesTargetOfTarget,
         "_AllianceList1" or "_AllianceList2" => configuration.JobNamesAlliance,
         _ => false,
     };
@@ -171,7 +183,7 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         var parsed = SeString.Parse(original);
         var payloads = new List<Payload>();
         var any = false;
-        var rules = addonName switch { "Character" => self, "_TargetInfo" => combinedTarget, "_TargetInfoToT" => targetOfTarget, _ => players };
+        var rules = addonName switch { "Character" => self, "_TargetInfo" => combinedTarget, "_TargetInfoMainTarget" => primaryTarget, "_TargetInfoToT" => targetOfTarget, _ => players };
         foreach (var payload in parsed.Payloads)
         {
             if (payload is TextPayload text)

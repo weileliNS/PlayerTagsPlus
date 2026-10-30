@@ -72,6 +72,7 @@ public class PluginConfigurationUI
                     if (ImGui.Checkbox("角色面板 / Character window", ref m_PluginConfiguration.JobNamesCharacter)) SaveSettings();
                     if (ImGui.Checkbox("焦点目标 / Focus target", ref m_PluginConfiguration.JobNamesFocusTarget)) SaveSettings();
                     if (ImGui.Checkbox("目标的目标 / Target of target", ref m_PluginConfiguration.JobNamesTargetOfTarget)) SaveSettings();
+                    if (ImGui.Checkbox("目标栏 / Target bar", ref m_PluginConfiguration.JobNamesTarget)) SaveSettings();
                     if (ImGui.Checkbox("团队列表 / Alliance list", ref m_PluginConfiguration.JobNamesAlliance)) SaveSettings();
                     ImGui.TextWrapped("使用职业标签文字；PvP 不替换。 / Uses job tag text; disabled in PvP.");
                     ImGui.Separator();

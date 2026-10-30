@@ -2,9 +2,9 @@
   "Author": "r00telement, Pilzinsel64, weileliNS",
   "Name": "Player Tags Plus",
   "InternalName": "PlayerTagsPlus",
-  "AssemblyVersion": "1.13.0.0",
+  "AssemblyVersion": "1.13.0.1",
   "Punchline": "以职业名替换名牌及常用面板姓名 / Job names across nameplates and UI",
-  "Description": "在 Player Tags 基础上增加小队、团队、角色面板、焦点目标和目标的目标姓名替换。沿用职业标签文字，PvP 不替换。 / Extends Player Tags with job names in party/alliance lists, the Character window, focus target and target of target. PvP is excluded. /playertagsplus",
+  "Description": "在 Player Tags 基础上增加小队、团队、角色面板、焦点目标、目标栏和目标的目标姓名替换。沿用职业标签文字，PvP 不替换。 / Extends Player Tags with job names in party/alliance lists, the Character window, focus target, target bar and target of target. PvP is excluded. /playertagsplus",
   "Tags": [
     "Jobs",
     "UI",

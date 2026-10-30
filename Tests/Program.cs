@@ -29,6 +29,14 @@ combined.Add("Alpha Beta", "White Mage"); combined.Exclude("Amber Blue"); combin
 Equal("A. B.", combined.Replace("A. B."));
 Equal("White Mage", combined.Replace("Alpha Beta"));
 Equal("Amber Blue", combined.Replace("Amber Blue"));
+var both = new UiNameRules();
+both.Add("Alpha Beta", "Paladin"); both.Add("Charlie Delta", "White Mage"); both.Seal();
+Equal("Paladin", both.Replace("Alpha Beta"));
+Equal("White Mage", both.Replace("Charlie Delta"));
+var primaryOnly = new UiNameRules();
+primaryOnly.Add("Alpha Beta", "Paladin"); primaryOnly.Exclude("Charlie Delta"); primaryOnly.Seal();
+Equal("Paladin", primaryOnly.Replace("A. B."));
+Equal("C. D.", primaryOnly.Replace("C. D."));
 var snapshot = new UiTextSnapshot(Encoding.UTF8.GetBytes("Alpha Beta"), Encoding.UTF8.GetBytes("White Mage"));
 Equal(true, snapshot.StillOurs(Encoding.UTF8.GetBytes("White Mage")));
 Equal("Alpha Beta", Encoding.UTF8.GetString(snapshot.SourceFor(Encoding.UTF8.GetBytes("White Mage"))));

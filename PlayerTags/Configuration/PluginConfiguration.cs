@@ -49,6 +49,7 @@ public class PluginConfiguration : IPluginConfiguration
     public bool JobNamesCharacter = true;
     public bool JobNamesFocusTarget = true;
     public bool JobNamesTargetOfTarget = true;
+    public bool JobNamesTarget = true;
     public bool JobNamesAlliance = true;
 
     [JsonProperty(TypeNameHandling = TypeNameHandling.None, ItemTypeNameHandling = TypeNameHandling.None)]

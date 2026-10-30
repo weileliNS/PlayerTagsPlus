@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Authors>r00telement;Pilzinsel64</Authors>
-    <Version>1.13.0.0</Version>
+    <Version>1.13.0.1</Version>
     <AssemblyName>PlayerTagsPlus</AssemblyName>
     <RootNamespace>PlayerTags</RootNamespace>
   </PropertyGroup>

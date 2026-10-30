@@ -4,9 +4,9 @@
 
 - 小队列表、团队列表
 - 角色面板右上角
-- Focus Target、Target of Target
+- Target Bar、Focus Target、Target of Target
 
-PvP 不替换；五个位置可以分别开关。首次运行会复制原 Player Tags 配置，职业名沿用你的标签文字。
+PvP 不替换；六个位置可以分别开关。首次运行会复制原 Player Tags 配置，职业名沿用你的标签文字。
 
 先停用原 Player Tags，再从个人插件仓库安装 Player Tags Plus。输入 `/playertagsplus` 打开设置。
 
@@ -14,7 +14,7 @@ PvP 不替换；五个位置可以分别开关。首次运行会复制原 Player
 
 ---
 
-Replace player names with job names. This fork keeps Player Tags and adds party/alliance lists, the Character header, Focus Target and Target of Target.
+Replace player names with job names. This fork keeps Player Tags and adds party/alliance lists, the Character header, Target Bar, Focus Target and Target of Target.
 
 Each location has its own switch. PvP is excluded. Existing Player Tags settings are copied on first launch; custom job text is reused.
 
