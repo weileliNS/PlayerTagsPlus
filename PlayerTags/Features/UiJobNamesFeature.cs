@@ -29,7 +29,6 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
     private UiNameRules self = new();
     private UiNameRules combinedTarget = new();
     private UiNameRules targetOfTarget = new();
-    private UiNameRules primaryTarget = new();
     private long lastRefresh;
     private long lastStatusSave;
     private bool disposing;
@@ -73,11 +72,9 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         var secondary = target?.TargetObject as IPlayerCharacter;
         var combined = new UiNameRules();
         var separate = new UiNameRules();
-        var primary = new UiNameRules();
         if (target is IPlayerCharacter mainPlayer)
         {
             var label = JobName(mainPlayer.ClassJob.RowId);
-            primary.Add(mainPlayer.Name.TextValue, label);
             if (configuration.JobNamesTarget) combined.Add(mainPlayer.Name.TextValue, label);
         }
         if (secondary != null)
@@ -89,7 +86,6 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         // Keep the two switches independent in the combined HUD layout.
         if (!configuration.JobNamesTarget && target is IPlayerCharacter) combined.Exclude(target.Name.TextValue);
         if (!configuration.JobNamesTargetOfTarget && secondary != null) combined.Exclude(secondary.Name.TextValue);
-        primary.Seal(); primaryTarget = primary;
         combined.Seal(); separate.Seal(); combinedTarget = combined; targetOfTarget = separate;
         all.Seal(); local.Seal(); players = all; self = local;
         if (Environment.TickCount64 - lastStatusSave > 2000)
@@ -129,7 +125,7 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         "Character" => configuration.JobNamesCharacter,
         "_FocusTargetInfo" => configuration.JobNamesFocusTarget,
         "_TargetInfo" => configuration.JobNamesTarget || configuration.JobNamesTargetOfTarget,
-        "_TargetInfoMainTarget" => configuration.JobNamesTarget,
+        "_TargetInfoMainTarget" => configuration.JobNamesTarget || configuration.JobNamesTargetOfTarget,
         "_TargetInfoToT" => configuration.JobNamesTargetOfTarget,
         "_AllianceList1" or "_AllianceList2" => configuration.JobNamesAlliance,
         _ => false,
@@ -183,7 +179,8 @@ public sealed unsafe class UiJobNamesFeature : IDisposable
         var parsed = SeString.Parse(original);
         var payloads = new List<Payload>();
         var any = false;
-        var rules = addonName switch { "Character" => self, "_TargetInfo" => combinedTarget, "_TargetInfoMainTarget" => primaryTarget, "_TargetInfoToT" => targetOfTarget, _ => players };
+        // The split main-target addon also contains the target-of-target name.
+        var rules = addonName switch { "Character" => self, "_TargetInfo" => combinedTarget, "_TargetInfoMainTarget" => combinedTarget, "_TargetInfoToT" => targetOfTarget, _ => players };
         foreach (var payload in parsed.Payloads)
         {
             if (payload is TextPayload text)
